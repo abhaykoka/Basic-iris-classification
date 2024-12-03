@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Classifier</title>
+    <script>
+        async function classifyIris() {
+            const features = [
+                parseFloat(document.getElementById('sepal_length').value),
+                parseFloat(document.getElementById('sepal_width').value),
+                parseFloat(document.getElementById('petal_length').value),
+                parseFloat(document.getElementById('petal_width').value)
+            ];
+            
+            const response = await fetch('/classifier/classify/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ features }),
+            });
+            
+            const result = await response.json();
+            document.getElementById('result').innerText = 
+                response.ok ? `Prediction: ${result.prediction}` : `Error: ${result.error}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Iris Flower Classifier</h1>
+    <form onsubmit="event.preventDefault(); classifyIris();">
+        <label for="sepal_length">Sepal Length:</label>
+        <input type="number" id="sepal_length" step="0.1" required><br><br>
+        <label for="sepal_width">Sepal Width:</label>
+        <input type="number" id="sepal_width" step="0.1" required><br><br>
+        <label for="petal_length">Petal Length:</label>
+        <input type="number" id="petal_length" step="0.1" required><br><br>
+        <label for="petal_width">Petal Width:</label>
+        <input type="number" id="petal_width" step="0.1" required><br><br>
+        <button type="submit">Classify</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
